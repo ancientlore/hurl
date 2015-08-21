@@ -2,6 +2,9 @@
 
 hURL: A tool to fetch over HTTP, slanted towards load generation.
 
+[![Build Status](https://travis-ci.org/ancientlore/kurl.svg?branch=master)](https://travis-ci.org/ancientlore/kurl)
+[![GoDoc](https://godoc.org/github.com/ancientlore/kurl?status.svg)](https://godoc.org/github.com/ancientlore/kurl)
+
 	    __    __  ______  __ 
 	   / /_  / / / / __ \/ / 
 	  / __ \/ / / / /_/ / /  
