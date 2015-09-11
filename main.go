@@ -36,27 +36,27 @@ type hdr struct {
 }
 
 var (
-	client      *http.Client
-	transport   *http.Transport
-	addr        string        = ":8080"
-	conns       int           = 2
-	timeout     time.Duration = 10 * time.Second
-	method      string        = "GET"
-	loop        int           = 1
-	filesPat    string
-	cpuProfile  string
-	memProfile  string
-	cpus        int
-	workingDir  string
-	discard     bool
-	noCompress  bool
-	noKeepAlive bool
-	noRequestId bool
-	headerDelim string = "|"
-	headerText  string
-	version     bool
-	help        bool
-	headers     []hdr
+	client       *http.Client
+	transport    *http.Transport
+	addr         string        = ":8080"
+	conns        int           = 2
+	timeout      time.Duration = 10 * time.Second
+	method       string        = "GET"
+	loop         int           = 1
+	filesPat     string
+	cpuProfile   string
+	memProfile   string
+	cpus         int
+	workingDir   string
+	discard      bool
+	noCompress   bool
+	noKeepAlive  bool
+	useRequestId bool
+	headerDelim  string = "|"
+	headerText   string
+	version      bool
+	help         bool
+	headers      []hdr
 )
 
 func init() {
@@ -69,7 +69,7 @@ func init() {
 	flag.DurationVar(&timeout, "timeout", timeout, "HTTP timeout.")
 	flag.StringVar(&filesPat, "files", filesPat, "Pattern of files to post, like *.xml. Comma-separate for multiple patterns.")
 	flag.StringVar(&method, "method", method, "HTTP method.")
-	flag.BoolVar(&noRequestId, "norequestid", noRequestId, "Don't send X-RequestID header.")
+	flag.BoolVar(&useRequestId, "requestid", useRequestId, "Send X-RequestID header.")
 	flag.IntVar(&loop, "loop", loop, "Number of times to loop and repeat.")
 	flag.BoolVar(&discard, "discard", discard, "Discard received data.")
 	flag.BoolVar(&noCompress, "nocompress", noCompress, "Disable HTTP compression.")

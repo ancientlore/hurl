@@ -83,7 +83,7 @@ func posterThread(ctx context.Context, ch <-chan L, wg *sync.WaitGroup) {
 				}
 				req.ContentLength = i.Size
 			}
-			if !noRequestId {
+			if useRequestId {
 				guid, err := uuid.NewV4()
 				if err == nil {
 					req.Header.Set("X-RequestID", guid.String())
