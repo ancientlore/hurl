@@ -104,9 +104,11 @@ A tool to fetch over HTTP, slanted towards load generation.
 
 Usage:
   hurl [options] url1 [url2 ... urlN]
+  hurl [options] @urlFile
 
 Example:
   hurl -method POST -files "*.xml" -conns 10 http://localhost/svc/foo http://localhost/svc/bar
+  hurl -method POST -files "*.xml" -conns 10 @urls.txt
 
 Options:`)
 	flag.PrintDefaults()

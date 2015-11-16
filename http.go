@@ -124,25 +124,25 @@ func posterThread(ctx context.Context, ch <-chan L, wg *sync.WaitGroup) {
 			if !(resp.StatusCode >= 200 && resp.StatusCode <= 299) {
 				log.Print("Failed to post to ", i.URL, ", status ", resp.Status)
 			}
-			if resp.ContentLength > 0 {
-				statusRange := resp.StatusCode / 100
-				switch statusRange {
-				case 1:
-					kubismus.Metric("Received100", 1, 0)
-				case 2:
-					kubismus.Metric("Received200", 1, 0)
-				case 3:
-					kubismus.Metric("Received300", 1, 0)
-				case 4:
-					kubismus.Metric("Received400", 1, 0)
-				case 5:
-					kubismus.Metric("Received500", 1, 0)
-				}
-				sz, err := io.Copy(writeTo, resp.Body)
-				if err == nil {
-					kubismus.Metric("Received", 1, float64(sz))
-				}
+			//if resp.ContentLength > 0 {
+			statusRange := resp.StatusCode / 100
+			switch statusRange {
+			case 1:
+				kubismus.Metric("Received100", 1, 0)
+			case 2:
+				kubismus.Metric("Received200", 1, 0)
+			case 3:
+				kubismus.Metric("Received300", 1, 0)
+			case 4:
+				kubismus.Metric("Received400", 1, 0)
+			case 5:
+				kubismus.Metric("Received500", 1, 0)
 			}
+			sz, err := io.Copy(writeTo, resp.Body)
+			if err == nil {
+				kubismus.Metric("Received", 1, float64(sz))
+			}
+			//}
 			resp.Body.Close()
 			d := time.Since(t)
 			kubismus.Metric("ResponseTime", 1, float64(d.Nanoseconds())/float64(time.Second))

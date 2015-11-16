@@ -15,7 +15,7 @@ func loopFiles(ctx context.Context, filePatterns []string, ch <-chan L) <-chan L
 	out := make(chan L)
 	looper := func(patList []string, c <-chan L) {
 		defer close(out)
-		for i := range ch {
+		for i := range c {
 
 			for _, pattern := range patList {
 				files, err := filepath.Glob(pattern)
