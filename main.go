@@ -51,7 +51,7 @@ var (
 	discard      bool
 	noCompress   bool
 	noKeepAlive  bool
-	useRequestId bool
+	useRequestId string
 	headerDelim  string = "|"
 	headerText   string
 	version      bool
@@ -69,7 +69,7 @@ func init() {
 	flag.DurationVar(&timeout, "timeout", timeout, "HTTP timeout.")
 	flag.StringVar(&filesPat, "files", filesPat, "Pattern of files to post, like *.xml. Comma-separate for multiple patterns.")
 	flag.StringVar(&method, "method", method, "HTTP method.")
-	flag.BoolVar(&useRequestId, "requestid", useRequestId, "Send X-RequestID header.")
+	flag.StringVar(&useRequestId, "requestid", useRequestId, "Name of header to send a random GUID.")
 	flag.IntVar(&loop, "loop", loop, "Number of times to loop and repeat.")
 	flag.BoolVar(&discard, "discard", discard, "Discard received data.")
 	flag.BoolVar(&noCompress, "nocompress", noCompress, "Disable HTTP compression.")
