@@ -2,16 +2,16 @@ package main
 
 import (
 	"bufio"
-	"golang.org/x/net/context"
+	"context"
 	"log"
 	"os"
 	"strings"
 )
 
-func loopUrls(ctx context.Context, method string, urls []string, ch <-chan L) <-chan L {
+func loopUrls(ctx context.Context, method string, urls []string, ch <-chan hRequest) <-chan hRequest {
 	done := ctx.Done()
-	out := make(chan L)
-	urlsInFile := func(i L, mth string, fileName string, c <-chan L) {
+	out := make(chan hRequest)
+	urlsInFile := func(i hRequest, mth string, fileName string, c <-chan hRequest) {
 		f, err := os.Open(fileName)
 		if err != nil {
 			log.Fatal(err)
@@ -35,7 +35,7 @@ func loopUrls(ctx context.Context, method string, urls []string, ch <-chan L) <-
 			log.Fatal(err)
 		}
 	}
-	looper := func(mth string, urlList []string, c <-chan L) {
+	looper := func(mth string, urlList []string, c <-chan hRequest) {
 		defer close(out)
 		for i := range c {
 			for _, url := range urlList {

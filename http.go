@@ -1,9 +1,7 @@
 package main
 
 import (
-	"github.com/ancientlore/kubismus"
-	"github.com/nu7hatch/gouuid"
-	"golang.org/x/net/context"
+	"context"
 	"io"
 	"io/ioutil"
 	"log"
@@ -16,6 +14,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/ancientlore/kubismus"
+	"github.com/nu7hatch/gouuid"
 )
 
 var (
@@ -26,7 +27,7 @@ func init() {
 	re = regexp.MustCompile(`[^\w]+`)
 }
 
-func urlToFilename(i *L) string {
+func urlToFilename(i *hRequest) string {
 	rawurl := strings.TrimPrefix(i.URL, "http://")
 	rawurl = strings.TrimPrefix(rawurl, "https://")
 	s := re.ReplaceAllString(rawurl, "_")
@@ -36,7 +37,7 @@ func urlToFilename(i *L) string {
 	return s + "_" + strconv.Itoa(i.LoopNum) + ".out"
 }
 
-func doHttp(ctx context.Context, postThreads int, ch <-chan L) {
+func doHTTP(ctx context.Context, postThreads int, ch <-chan hRequest) {
 	var wg sync.WaitGroup
 
 	// create HTTP posting threads
@@ -49,7 +50,7 @@ func doHttp(ctx context.Context, postThreads int, ch <-chan L) {
 	wg.Wait()
 }
 
-func posterThread(ctx context.Context, ch <-chan L, wg *sync.WaitGroup) {
+func posterThread(ctx context.Context, ch <-chan hRequest, wg *sync.WaitGroup) {
 	done := ctx.Done()
 	defer wg.Done()
 
@@ -83,14 +84,14 @@ func posterThread(ctx context.Context, ch <-chan L, wg *sync.WaitGroup) {
 				}
 				req.ContentLength = i.Size
 			}
-			if useRequestId != "" {
+			if useRequestID != "" {
 				guid, err := uuid.NewV4()
 				if err == nil {
-					req.Header.Set(useRequestId, guid.String())
+					req.Header.Set(useRequestID, guid.String())
 				}
 			}
 			for _, h := range headers {
-				if h.Mode == HdrSet {
+				if h.Mode == hdrSet {
 					req.Header.Set(h.Key, h.Value)
 				} else {
 					req.Header.Add(h.Key, h.Value)

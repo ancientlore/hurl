@@ -1,19 +1,19 @@
 package main
 
 import (
-	"golang.org/x/net/context"
+	"context"
 	"log"
 	"os"
 	"path/filepath"
 )
 
-func loopFiles(ctx context.Context, filePatterns []string, ch <-chan L) <-chan L {
+func loopFiles(ctx context.Context, filePatterns []string, ch <-chan hRequest) <-chan hRequest {
 	if filePatterns == nil || len(filePatterns) == 0 {
 		return ch
 	}
 	done := ctx.Done()
-	out := make(chan L)
-	looper := func(patList []string, c <-chan L) {
+	out := make(chan hRequest)
+	looper := func(patList []string, c <-chan hRequest) {
 		defer close(out)
 		for i := range c {
 

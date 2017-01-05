@@ -1,13 +1,10 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/ancientlore/flagcfg"
-	"github.com/ancientlore/kubismus"
-	"github.com/facebookgo/flagenv"
-	"golang.org/x/net/context"
 	"log"
 	"net/http"
 	"os"
@@ -17,6 +14,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/ancientlore/flagcfg"
+	"github.com/ancientlore/kubismus"
+	"github.com/facebookgo/flagenv"
 )
 
 // github.com/ancientlore/binder is used to package the web files into the executable.
@@ -25,8 +26,8 @@ import (
 type hdrMode int
 
 const (
-	HdrSet hdrMode = iota
-	HdrAdd
+	hdrSet hdrMode = iota
+	hdrAdd
 )
 
 type hdr struct {
@@ -38,11 +39,11 @@ type hdr struct {
 var (
 	client       *http.Client
 	transport    *http.Transport
-	addr         string        = ":8080"
-	conns        int           = 2
-	timeout      time.Duration = 10 * time.Second
-	method       string        = "GET"
-	loop         int           = 1
+	addr         string
+	conns        int
+	timeout      time.Duration
+	method       string
+	loop         int
 	filesPat     string
 	cpuProfile   string
 	memProfile   string
@@ -51,8 +52,8 @@ var (
 	discard      bool
 	noCompress   bool
 	noKeepAlive  bool
-	useRequestId string
-	headerDelim  string = "|"
+	useRequestID string
+	headerDelim  string
 	headerText   string
 	version      bool
 	help         bool
@@ -62,30 +63,30 @@ var (
 func init() {
 
 	// http service/status address
-	flag.StringVar(&addr, "addr", addr, "HTTP service address for monitoring.")
+	flag.StringVar(&addr, "addr", ":8080", "HTTP service address for monitoring.")
 
 	// http post settings
-	flag.IntVar(&conns, "conns", conns, "Number of concurrent HTTP connections.")
-	flag.DurationVar(&timeout, "timeout", timeout, "HTTP timeout.")
-	flag.StringVar(&filesPat, "files", filesPat, "Pattern of files to post, like *.xml. Comma-separate for multiple patterns.")
-	flag.StringVar(&method, "method", method, "HTTP method.")
-	flag.StringVar(&useRequestId, "requestid", useRequestId, "Name of header to send a random GUID.")
-	flag.IntVar(&loop, "loop", loop, "Number of times to loop and repeat.")
-	flag.BoolVar(&discard, "discard", discard, "Discard received data.")
-	flag.BoolVar(&noCompress, "nocompress", noCompress, "Disable HTTP compression.")
-	flag.BoolVar(&noKeepAlive, "nokeepalive", noKeepAlive, "Disable HTTP keep-alives.")
+	flag.IntVar(&conns, "conns", 2, "Number of concurrent HTTP connections.")
+	flag.DurationVar(&timeout, "timeout", 10*time.Second, "HTTP timeout.")
+	flag.StringVar(&filesPat, "files", "", "Pattern of files to post, like *.xml. Comma-separate for multiple patterns.")
+	flag.StringVar(&method, "method", "GET", "HTTP method.")
+	flag.StringVar(&useRequestID, "requestid", "", "Name of header to send a random GUID.")
+	flag.IntVar(&loop, "loop", 1, "Number of times to loop and repeat.")
+	flag.BoolVar(&discard, "discard", false, "Discard received data.")
+	flag.BoolVar(&noCompress, "nocompress", false, "Disable HTTP compression.")
+	flag.BoolVar(&noKeepAlive, "nokeepalive", false, "Disable HTTP keep-alives.")
 
 	// headers
-	flag.StringVar(&headerDelim, "hdrdelim", headerDelim, "Delimiter for HTTP headers specified with -header.")
-	flag.StringVar(&headerText, "headers", headerText, "HTTP headers, delimited by -hdrdelim.")
+	flag.StringVar(&headerDelim, "hdrdelim", "|", "Delimiter for HTTP headers specified with -header.")
+	flag.StringVar(&headerText, "headers", "", "HTTP headers, delimited by -hdrdelim.")
 
 	// profiling
-	flag.StringVar(&cpuProfile, "cpuprofile", cpuProfile, "Write CPU profile to given file.")
-	flag.StringVar(&memProfile, "memprofile", memProfile, "Write memory profile to given file.")
+	flag.StringVar(&cpuProfile, "cpuprofile", "", "Write CPU profile to given file.")
+	flag.StringVar(&memProfile, "memprofile", "", "Write memory profile to given file.")
 
 	// runtime
-	flag.IntVar(&cpus, "cpu", cpus, "Number of CPUs to use.")
-	flag.StringVar(&workingDir, "wd", workingDir, "Set the working directory.")
+	flag.IntVar(&cpus, "cpu", 0, "Number of CPUs to use.")
+	flag.StringVar(&workingDir, "wd", "", "Set the working directory.")
 
 	// help
 	flag.BoolVar(&version, "version", false, "Show version.")
@@ -121,7 +122,7 @@ of the file can be overridden with the HURL_CONFIG environment variable.`)
 }
 
 func showVersion() {
-	fmt.Printf("hURL version %s\n", HURL_VERSION)
+	fmt.Printf("hURL version %s\n", hurlVersion)
 }
 
 func parseHeaders() error {
@@ -139,9 +140,9 @@ func parseHeaders() error {
 			_, ok := found[newHdr.Key]
 			if !ok {
 				found[newHdr.Key] = true
-				newHdr.Mode = HdrSet
+				newHdr.Mode = hdrSet
 			} else {
-				newHdr.Mode = HdrAdd
+				newHdr.Mode = hdrAdd
 			}
 			headers = append(headers, newHdr)
 		}
@@ -283,7 +284,7 @@ func main() {
 	ch1 := loopCount(ctx, loop)
 	ch2 := loopUrls(ctx, method, flag.Args(), ch1)
 	ch3 := loopFiles(ctx, patList, ch2)
-	doHttp(ctx, conns, ch3)
+	doHTTP(ctx, conns, ch3)
 
 	// write memory profile if configured
 	if memProfile != "" {

@@ -1,3 +1,3 @@
 package main
 
-const HURL_VERSION = "0.1"
+const hurlVersion = "0.1"
