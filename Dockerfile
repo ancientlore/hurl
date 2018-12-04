@@ -1,8 +1,8 @@
 FROM golang as builder
 WORKDIR /go/src/github.com/ancientlore/hurl
 ADD . .
-RUN CGO_ENABLED=0 GOOS=linux go get .
-RUN CGO_ENABLED=0 GOOS=linux go install
+RUN CGO_ENABLED=0 GOOS=linux GO111MODULE=on go get .
+RUN CGO_ENABLED=0 GOOS=linux GO111MODULE=on go install
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates tzdata
