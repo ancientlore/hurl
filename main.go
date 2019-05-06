@@ -110,6 +110,7 @@ Usage:
 Example:
   hurl -method POST -files "*.xml" -conns 10 http://localhost/svc/foo http://localhost/svc/bar
   hurl -method POST -files "*.xml" -conns 10 @urls.txt
+  hurl -method POST -files "*.xml" -conns 10 < urls.txt
 
 Options:`)
 	flag.PrintDefaults()
@@ -169,11 +170,6 @@ func main() {
 
 	if version {
 		showVersion()
-		return
-	}
-
-	if flag.NArg() < 1 {
-		fmt.Fprintf(os.Stderr, "Please provide a URL to fetch.\n")
 		return
 	}
 

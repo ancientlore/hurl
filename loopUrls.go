@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -38,19 +39,43 @@ func loopUrls(ctx context.Context, method string, urls []string, ch <-chan hRequ
 	looper := func(mth string, urlList []string, c <-chan hRequest) {
 		defer close(out)
 		for i := range c {
-			for _, url := range urlList {
-				// check for file of URLs
-				if strings.HasPrefix(url, "@") {
-					urlsInFile(i, mth, url[1:], c)
-				} else {
-					data := i
-					data.URL = url
-					data.Method = mth
-					select {
-					case out <- data:
-					case <-done:
-						return
+			if len(urlList) > 0 {
+				for _, url := range urlList {
+					// check for file of URLs
+					if strings.HasPrefix(url, "@") {
+						urlsInFile(i, mth, url[1:], c)
+					} else {
+						data := i
+						data.URL = url
+						data.Method = mth
+						select {
+						case out <- data:
+						case <-done:
+							return
+						}
 					}
+				}
+			} else {
+				// process stdin
+				scanner := bufio.NewScanner(os.Stdin)
+				for scanner.Scan() {
+					// check for file of URLs
+					url := scanner.Text()
+					if strings.HasPrefix(url, "@") {
+						urlsInFile(i, mth, url[1:], c)
+					} else {
+						data := i
+						data.URL = url
+						data.Method = mth
+						select {
+						case out <- data:
+						case <-done:
+							return
+						}
+					}
+				}
+				if err := scanner.Err(); err != nil && err != io.EOF {
+					log.Print(err)
 				}
 			}
 		}
