@@ -1,6 +1,7 @@
-FROM golang:1.14.4 as builder
+FROM golang:1.14 as builder
 WORKDIR /go/src/github.com/ancientlore/hurl
 ADD . .
+RUN go version
 RUN CGO_ENABLED=0 GOOS=linux GO111MODULE=on go get .
 RUN CGO_ENABLED=0 GOOS=linux GO111MODULE=on go install
 
