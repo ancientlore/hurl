@@ -16,7 +16,7 @@ import (
 	"time"
 
 	"github.com/ancientlore/kubismus"
-	"github.com/nu7hatch/gouuid"
+	"github.com/google/uuid"
 )
 
 var (
@@ -85,7 +85,7 @@ func posterThread(ctx context.Context, ch <-chan hRequest, wg *sync.WaitGroup) {
 				req.ContentLength = i.Size
 			}
 			if useRequestID != "" {
-				guid, err := uuid.NewV4()
+				guid, err := uuid.NewRandom()
 				if err == nil {
 					req.Header.Set(useRequestID, guid.String())
 				}
