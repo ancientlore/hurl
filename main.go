@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"embed"
 	"errors"
 	"flag"
 	"fmt"
@@ -19,9 +20,6 @@ import (
 	"github.com/ancientlore/kubismus"
 	"github.com/facebookgo/flagenv"
 )
-
-// github.com/ancientlore/binder is used to package the web files into the executable.
-//go:generate binder -package main -o webcontent.go media/*.png
 
 type hdrMode int
 
@@ -59,6 +57,9 @@ var (
 	help         bool
 	headers      []hdr
 )
+
+//go:embed media/*.png
+var media embed.FS
 
 func init() {
 
@@ -220,7 +221,7 @@ func main() {
 	kubismus.Note("URLs", strings.Join(flag.Args(), "\n"))
 	kubismus.Note("Discard files", strconv.FormatBool(discard))
 	http.Handle("/", http.HandlerFunc(kubismus.ServeHTTP))
-	http.HandleFunc("/media/", ServeHTTP)
+	http.Handle("/media/", http.FileServer(http.FS(media)))
 
 	// switch to working dir
 	if workingDir != "" {
