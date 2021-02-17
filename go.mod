@@ -2,7 +2,7 @@ module github.com/ancientlore/hurl
 
 require (
 	github.com/ancientlore/flagcfg v1.0.3
-	github.com/ancientlore/kubismus v1.1.0
+	github.com/ancientlore/kubismus v1.1.1
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/facebookgo/ensure v0.0.0-20200202191622-63f1cf65ac4c // indirect
 	github.com/facebookgo/flagenv v0.0.0-20160425205200-fcd59fca7456
