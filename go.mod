@@ -8,7 +8,7 @@ require (
 	github.com/facebookgo/flagenv v0.0.0-20160425205200-fcd59fca7456
 	github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 // indirect
 	github.com/facebookgo/subset v0.0.0-20200203212716-c811ad88dec4 // indirect
-	github.com/google/uuid v1.2.0
+	github.com/google/uuid v1.3.0
 )
 
 go 1.16
