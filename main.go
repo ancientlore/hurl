@@ -198,7 +198,7 @@ func main() {
 	}
 
 	// create HTTP transport and client
-	transport = &http.Transport{DisableKeepAlives: noKeepAlive, MaxIdleConnsPerHost: conns, DisableCompression: noCompress, ResponseHeaderTimeout: timeout}
+	transport = &http.Transport{Proxy: http.ProxyFromEnvironment, DisableKeepAlives: noKeepAlive, MaxIdleConnsPerHost: conns, DisableCompression: noCompress, ResponseHeaderTimeout: timeout}
 	client = &http.Client{Transport: transport, Timeout: timeout}
 
 	// setup Kubismus
