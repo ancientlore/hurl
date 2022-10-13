@@ -1,7 +1,7 @@
-github.com/BurntSushi/toml v0.4.1 h1:GaI7EiDXDRfa8VshkTj7Fym7ha+y8/XxIgD2okUIjLw=
-github.com/BurntSushi/toml v0.4.1/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
-github.com/ancientlore/flagcfg v1.0.4 h1:9+QLfsRorHhhccuw4Khjftk/yPANwiRQfU+z6y/U5HE=
-github.com/ancientlore/flagcfg v1.0.4/go.mod h1:G3JY6lENhoblKeTVQykVsn6Y5VO3wHP5rD3f4HlTpNo=
+github.com/BurntSushi/toml v1.2.0 h1:Rt8g24XnyGTyglgET/PRUNlrUeu9F5L+7FilkXfZgs0=
+github.com/BurntSushi/toml v1.2.0/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
+github.com/ancientlore/flagcfg v1.0.5 h1:sqllabtkFIKSWzRf8e8koGDHU/GdGAPd1ffzUzLhJII=
+github.com/ancientlore/flagcfg v1.0.5/go.mod h1:i31nZlvx/WkvVm7wAnXiYB9edUkjQlKocX7WAFlXGyE=
 github.com/ancientlore/kubismus v1.1.2 h1:OggtpvmLdTXWUb5nGks9E65SLJTsJMhfiIw1qLF9PG0=
 github.com/ancientlore/kubismus v1.1.2/go.mod h1:IhzWEY3umUhpOuKhXpzBhkJ6FAtLhbQ2kPZt/OLvgYs=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
