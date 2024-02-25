@@ -4,7 +4,7 @@ require (
 	github.com/ancientlore/flagcfg v1.1.0
 	github.com/ancientlore/kubismus v1.1.3
 	github.com/facebookgo/flagenv v0.0.0-20160425205200-fcd59fca7456
-	github.com/google/uuid v1.5.0
+	github.com/google/uuid v1.6.0
 )
 
 require (
