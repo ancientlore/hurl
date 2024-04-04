@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime/trace"
 	"strconv"
 	"strings"
 	"sync"
@@ -61,12 +63,14 @@ func posterThread(ctx context.Context, ch <-chan hRequest, wg *sync.WaitGroup) {
 				return
 			}
 			//log.Printf("%#v", i)
+			tr := trace.StartRegion(ctx, fmt.Sprintf("#%d %s %s", i.LoopNum, i.Method, i.URL))
 			var f io.ReadCloser
 			var err error
 			if i.Filename != "" {
 				f, err = os.Open(i.Filename)
 				if err != nil {
 					log.Printf("Unable to open %s", i.Filename)
+					tr.End()
 					continue
 				}
 			}
@@ -75,6 +79,7 @@ func posterThread(ctx context.Context, ch <-chan hRequest, wg *sync.WaitGroup) {
 				if f != nil {
 					f.Close()
 				}
+				tr.End()
 				log.Fatal(err)
 			}
 			if i.Filename != "" {
@@ -107,6 +112,7 @@ func posterThread(ctx context.Context, ch <-chan hRequest, wg *sync.WaitGroup) {
 			if err != nil {
 				kubismus.Metric("Error", 1, 0)
 				log.Print("HTTP error ", i.URL, ": ", err)
+				tr.End()
 				continue
 			}
 			kubismus.Metric("Sent", 1, float64(i.Size))
@@ -150,6 +156,7 @@ func posterThread(ctx context.Context, ch <-chan hRequest, wg *sync.WaitGroup) {
 			if outfile != nil {
 				outfile.Close()
 			}
+			tr.End()
 		case <-done:
 			return
 		}

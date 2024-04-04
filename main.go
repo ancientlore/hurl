@@ -12,6 +12,7 @@ import (
 	"os/signal"
 	"runtime"
 	"runtime/pprof"
+	"runtime/trace"
 	"strconv"
 	"strings"
 	"time"
@@ -45,6 +46,7 @@ var (
 	filesPat     string
 	cpuProfile   string
 	memProfile   string
+	traceFile    string
 	cpus         int
 	workingDir   string
 	discard      bool
@@ -84,6 +86,7 @@ func init() {
 	// profiling
 	flag.StringVar(&cpuProfile, "cpuprofile", "", "Write CPU profile to given file.")
 	flag.StringVar(&memProfile, "memprofile", "", "Write memory profile to given file.")
+	flag.StringVar(&traceFile, "trace", "", "Write a trace file.")
 
 	// runtime
 	flag.IntVar(&cpus, "cpu", 0, "Number of CPUs to use.")
@@ -195,6 +198,23 @@ func main() {
 			pprof.StopCPUProfile()
 			f.Close()
 		}()
+	}
+
+	if traceFile != "" {
+		f, err := os.Create(traceFile)
+		if err != nil {
+			log.Fatalf("failed to create trace output file: %v", err)
+		}
+		defer func() {
+			if err := f.Close(); err != nil {
+				log.Fatalf("failed to close trace file: %v", err)
+			}
+		}()
+
+		if err := trace.Start(f); err != nil {
+			log.Fatalf("failed to start trace: %v", err)
+		}
+		defer trace.Stop()
 	}
 
 	// create HTTP transport and client
